@@ -1,0 +1,14 @@
+/* You can add global styles to this file, and also import other style files */
+/*body{*/
+/*  justify-content: center;*/
+/*  align-items: center;*/
+/*  display: flex;*/
+/*}*/
+
+body{
+  /*justify-content: center;*/
+  /*display: contents;*/
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+}
