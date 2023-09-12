@@ -1,3 +1,6 @@
+@import 'https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300';
+
+
 .mainContainer{
   margin: 0 10%;
   height: 100%;
@@ -8,7 +11,8 @@
   flex-direction: column;
   border-left: 1px solid #ccc;
   border-right: 1px solid #ccc;
-  position: center;
+  position: relative;
+  /*flex: 1;*/
 }
 
 
@@ -16,8 +20,13 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
+  background-color: #ffffff;
 
 }
+
+/*============================================
+      CSS for Inputs div
+==============================================*/
 
 .inputs-div{
   margin-top: 50px;
@@ -26,51 +35,171 @@
   height: 100%;
   padding: 20px;
   border-right: 1px solid #ccc;
-  background-color: #f8f8f8;
   position: center;
 }
+
+.headerDiv{
+  margin-bottom: 25px;
+  display: flex;
+}
+
+label{
+  font-weight: bold;
+}
+
+/*=======================================
+     CSS for placeholder color change
+=========================================*/
+.error-placeholder::placeholder {
+  color: red;
+}
+
+.error-placeholder:-ms-input-placeholder {
+  color: red;
+}
+
+.error-placeholder::-ms-input-placeholder{
+  color: red;
+}
+
+
+/*==========================================
+    CSS for dependency div
+ ===========================================*/
 .dependencies-div{
   margin-top: 50px;
   margin-bottom: 35px;
   width: 100%;
   height: 100%;
   padding: 20px;
-  background-color: #f8f8f8;
   position: center;
 }
+
+.dependency-headerDiv{
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  flex-direction: row;
+  margin-right: 0;
+  margin-left: 0;
+}
+.default-message{
+  padding: 10px 10px 10px 10px;
+  font-style: italic;
+}
+.box-1{
+  margin-right: 0;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+}
+.dependency-btn {
+  margin: 5px 5px 5px 5px;
+  line-height: 35px;
+  height: 35px;
+  text-align: center;
+  width: 250px;
+  cursor: pointer;
+
+}
+
+.add-btn {
+
+  margin-right: 0;
+  line-height: 35px;
+  height: 35px;
+  text-align: center;
+  width: 200px;
+  cursor: pointer;
+  color: #000000;
+  transition: all 0.3s;
+  position: relative;
+
+}
+
+.add-btn::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  opacity: 0;
+  transition: all 0.3s;
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+  border-top-style: solid;
+  border-bottom-style: solid;
+  border-top-color: rgb(0, 0, 171);
+  border-bottom-color: rgb(0, 0, 171);
+  /*background-color: rgba(0, 86, 171, 0.24);*/
+  transform: scale(0.1, 1);
+}
+.add-btn:hover span {
+  letter-spacing: 2px;
+  font-weight: bold;
+  color: #0000ab;
+}
+.add-btn:hover::before {
+  opacity: 1;
+  transform: scale(1, 1);
+}
+.add-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  transition: all 0.3s;
+  background-color: rgba(255, 255, 255, 0);
+}
+.add-btn:hover::after {
+  opacity: 0;
+  transform: scale(0.1, 1);
+}
+
+
+.modal-dialog{
+  width: 800px;
+  height: 500px;
+}
+
+/*============================================
+      CSS for title div
+==============================================*/
+
 .title-div{
   margin-top: 25px;
   display: flex;
   border-bottom: 1px solid #ccc;
-}
-.footer-div{
-  background-color: rgb(232, 232, 232);
-  justify-content: center;
-  display: grid;
-  /*flex-direction: row;*/
-  width: 100%;
-  height: 100px;
-  bottom: 0;
-  position: sticky;
-  padding: 20px;
-
-
 }
 
 .logo {
   max-width: 50px;
   margin-right: 10px;
 }
-
 .title-h1{
   display: inline;
   margin-right: 5px;;
 }
 
-.headerDiv{
-  display: flex;
-}
 
+
+/*============================================
+      CSS for Footer div
+==============================================*/
+.footer-div{
+  background-color: rgb(255, 255, 255);
+  justify-content: center;
+  display: grid;
+  width: calc(100% - 6.5em - 20%);
+  height: 100px;
+  bottom: 0;
+  position: fixed;
+  padding: 20px;
+}
 .btn-primary{
   justify-content: center;
 }
@@ -80,9 +209,7 @@
   justify-content: center;
   display:flex ;
 }
-label{
-  font-weight: bold;
-}
+
 .mt-3{
   animation: fadeIn 2s ease-in-out infinite alternate;
   /*animation-timing-function: ease;*/
@@ -98,17 +225,16 @@ label{
 
 }
 
-.error-placeholder::placeholder {
-  color: red;
-}
 
-.error-placeholder:-ms-input-placeholder {
-  color: red;
-}
 
-.error-placeholder::-ms-input-placeholder{
-  color: red;
-}
+
+
+
+
+
+
+
+
 
 
 

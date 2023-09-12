@@ -1,0 +1,80 @@
+@import 'https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300';
+
+/*.body-div-dependency{*/
+/*  height: 100%;*/
+/*  position: relative;*/
+/*}*/
+
+/* CSS for the popup container */
+.popup {
+  background-color: #ffffff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  border-radius: 5px;
+  width: 800px;
+  /*text-align: center;*/
+}
+
+/* CSS for the list */
+.popup-list {
+  list-style: none;
+  padding: 0;
+}
+
+.list {
+  cursor: pointer;
+  padding: 10px 10px;
+  border-bottom: 1px solid #ddd;
+  transition: background-color 0.2s;
+}
+
+.list:last-child {
+  border-bottom: none;
+}
+
+.list:hover {
+  /*background-color: rgb(0, 0, 171);*/
+  color: rgb(0, 0, 171);
+}
+
+/* Additional styles for the popup header (optional) */
+.popup h2 {
+  margin: 0 0 15px;
+  padding-bottom: 10px;
+  font-size: 32px;
+  color: #0000ab;
+  border-bottom: 1px solid #ddd;
+}
+
+.list{
+
+  /*display: list-item;*/
+  /*text-align: -webkit-match-parent;*/
+  /*flex-direction: row;*/
+}
+strong {
+  display: block;
+  font-size: 16px;
+}
+span{
+  display: block;
+}
+.versions-list{
+  background-color: white;
+}
+versions-list :hover{
+
+  color: rgb(0, 0, 171);
+}
+.versions-list li:hover {
+  background-color: rgb(0, 0, 171);
+  color: white;
+}
+.versions-list li{
+  background-color: white;
+  color: black;
+
+}
+
+
+

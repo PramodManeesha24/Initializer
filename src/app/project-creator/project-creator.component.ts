@@ -1,22 +1,51 @@
-import { Component } from '@angular/core';
+import {Component, Inject} from '@angular/core';
+import { PopupDependencyService } from '../popup-dependency.service';
 import { BackendService } from '../backend.service';
+
+import {MatDialog, MAT_DIALOG_DATA, MatDialogRef, MatDialogModule} from '@angular/material/dialog';
+import {NgIf} from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import {FormsModule} from '@angular/forms';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {AppModule} from "../app.module";
+
+export interface DialogData {
+  animal: string;
+  name: string;
+}
 @Component({
   selector: 'app-project-creator',
   templateUrl: './project-creator.component.html',
-  styleUrls: ['./project-creator.component.css']
+  styleUrls: ['./project-creator.component.css'],
 })
 export class ProjectCreatorComponent {
-  constructor(private backendService: BackendService) { }
+  constructor(private backendService: BackendService,
+              private popupDependencyService:PopupDependencyService
+  ) { }
   javaVersions: number[] = [17, 18, 19, 20];
-  javaVersionSelected: boolean = false;
-  countdown: number = 15;
 
-  creating: boolean = false;
-  generateVisibal: boolean = false;
+  isPopupVisible: boolean = false;
+  showPopup() {
+    // const popup = this.popupDependencyService.open(PopupDependencyService);
+    console.log("show popup method called")
+    return this.isPopupVisible = true;
+  }
+  hidePopup() {
+    this.isPopupVisible = false;
+  }
 
 
-
-
+  // openPopup(content: any) {
+  //   this.showPopup = true;
+  //   this.modalService.open(content, { centered: true }); // Use NgbModal to open the popup
+  // }
+  //
+  //
+  // addDependency(dependency: any) {
+  //   this.popupDependencyService.addDependency(dependency);
+  //   this.showPopup = false; // Close the popup
+  // }
   onJavaVersionChange() {
 
     const javaVersionString = (document.getElementById('javaVersion') as HTMLInputElement);

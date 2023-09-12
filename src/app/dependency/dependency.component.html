@@ -1,0 +1,39 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<div class="body-div-dependency">
+
+  <!-- Your popup container -->
+  <div class="popup">
+    <h2>Dependency</h2>
+    <ul class="popup-list">
+      <li class="list" (click)="selectItem('AutoFlex')">
+        <strong>AutoFlex</strong>
+        <span>AutoFlex is a library that allows you to create responsive layouts with ease.</span>
+        <ul class="versions-list" *ngIf="isVersionsVisible('AutoFlex')">
+          <li>Version 1.0</li>
+          <li>Version 2.0</li>
+          <!-- Add more versions here -->
+        </ul>
+      </li>
+      <li class="list" (click)="selectItem('Healanium Manager')">
+        <strong>Healanium Manager</strong>
+        <span>Sample text</span>
+        <ul class="versions-list" *ngIf="isVersionsVisible('Healanium Manager')">
+          <li>Version 1.0</li>
+          <li>Version 2.0</li>
+          <!-- Add more versions here -->
+        </ul>
+      </li>
+      <li class="list" (click)="selectItem('Healanium Web')">
+        <strong>Healanium Web</strong>
+        <span>Sample text</span>
+        <ul class="versions-list" *ngIf="isVersionsVisible('Healanium Web')">
+          <li>Version 1.0</li>
+          <li>Version 2.0</li>
+          <!-- Add more versions here -->
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+</div>
