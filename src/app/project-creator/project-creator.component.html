@@ -10,18 +10,18 @@
     <!--    Inputs Area  -->
     <div class="inputs-div">
       <div class="headerDiv">
-        <h4>Create AutoFlex Project</h4>
+        <h1>Create AutoFlex Project</h1>
       </div>
       <form #projectForm>
-        <!--        <div class="form-group">-->
-        <!--          <label for="group">Group:</label>-->
-        <!--          <input type="text" class="form-control" id="group" name="group" required value="net.codegen" disabled>-->
-        <!--        </div>-->
+<!--                <div class="form-group">-->
+<!--                  <label for="group">Group:</label>-->
+<!--                  <input type="text" class="form-control" id="group" name="group" required value="net.codegen" disabled>-->
+<!--                </div>-->
 
-        <!--        <div class="form-group">-->
-        <!--          <label for="artifact">Artifact:</label>-->
-        <!--          <input type="text" class="form-control" id="artifact" name="artifact" required value="qa" disabled>-->
-        <!--        </div>-->
+<!--                <div class="form-group">-->
+<!--                  <label for="artifact">Artifact:</label>-->
+<!--                  <input type="text" class="form-control" id="artifact" name="artifact" required value="qa" disabled>-->
+<!--                </div>-->
 
         <div class="form-group">
           <label for="projectName">Project Name:</label>
@@ -50,25 +50,52 @@
     <div class="dependencies-div">
       <div class="dependency-headerDiv">
         <div style="width: 100%">
-          <h4>Dependencies</h4>
+          <h2>Dependencies</h2>
         </div>
+        <!--        <button mat-button (click)="openDialog()" style="color: black">Open dialog</button>-->
+
         <div class="box-1">
           <div class="dependency-btn add-btn" (click)="showPopup()">
             <span>Add dependency</span>
           </div>
-          <div class="modal" [ngClass]="{ 'show': isPopupVisible }" tabindex="-1" role="dialog">
-            <div class="modal-dialog" >
-              <div class="modal-content">
-                <app-dependency *ngIf="isPopupVisible"></app-dependency>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
-      <div class="dependency-list">
-        <div class="default-message">
+      <div class="dependency-list" >
+        <div class="default-message" *ngIf="!isDependencyAdded" >
           <p> No dependency selected </p>
         </div>
+        <div class="selected-dependency-list" *ngIf="isDependencyAdded" >
+          <div class="selected-dependency-list-body" >
+            <ul>
+              <li class="list-items" *ngFor="let item of selectedItems" >
+                <div style="margin-left: 0; padding-right: 50px">
+                  <strong>{{ item.name }}</strong>
+                  <strong>{{ item.version }}</strong>
+                  <span>{{ item.description }}</span>
+                </div>
+                <div class="remove-btn-div">
+                  <div type="button" class="remove-btn" (click)="removeItem(item)">-</div>
+<!--                  <button type="button" class="remove-btn" (click)="removeItem(item)">-</button>-->
+                </div>
+              </li>
+            </ul>
+
+          </div>
+
+        </div>
+      </div>
+      <div class="custom-dependency-div">
+        <h2 style="border-bottom: 1px solid #cccccc; padding-bottom: 5px">Custom Dependency</h2>
+        <br>
+        <textarea class="custom-dependency-text" placeholder=" Add your custom maven dependencies here,
+        <dependency>
+            <groupId>groupID</groupId>
+            <artifactId>artifactID</artifactId>
+            <version>version</version>
+        </dependency>"></textarea>
+
+
+
       </div>
     </div>
   </div>
@@ -85,7 +112,6 @@
       <p class="doneMessage" id="doneMessage" style="display: none">Download is completed. </p>
     </div>
   </div>
-
 
 
 </div>

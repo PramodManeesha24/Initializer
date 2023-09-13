@@ -1,7 +1,7 @@
 import {Component, Inject} from '@angular/core';
 import { PopupDependencyService } from '../popup-dependency.service';
 import { BackendService } from '../backend.service';
-
+import {DataService} from "../data.service";
 import {MatDialog, MAT_DIALOG_DATA, MatDialogRef, MatDialogModule} from '@angular/material/dialog';
 import {NgIf} from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,6 +9,7 @@ import {FormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {AppModule} from "../app.module";
+import {DependencyComponent} from "../dependency/dependency.component";
 
 export interface DialogData {
   animal: string;
@@ -20,17 +21,76 @@ export interface DialogData {
   styleUrls: ['./project-creator.component.css'],
 })
 export class ProjectCreatorComponent {
+
+
   constructor(private backendService: BackendService,
-              private popupDependencyService:PopupDependencyService
+              public dialog: MatDialog,
+
+
+              private dataService: DataService,
   ) { }
   javaVersions: number[] = [17, 18, 19, 20];
 
   isPopupVisible: boolean = false;
-  showPopup() {
-    // const popup = this.popupDependencyService.open(PopupDependencyService);
-    console.log("show popup method called")
-    return this.isPopupVisible = true;
+  isDependencyAdded: boolean = false;
+
+  public static itemLists: any[] = [];
+  selectedItems: any[] = [];
+  selectedItem() {
+    // Access the data from the service
+    const mainItem = this.dataService.selectedMainItem;
+    const description = this.dataService.itemDescription;
+    const version = this.dataService.selectedVersion;
+    const existingItemIndex = this.selectedItems.findIndex(item => item.name === mainItem);
+    if (mainItem != null || description != null || version != null) {
+      this.isDependencyAdded = true;
+    }
+
+
+
+    if (existingItemIndex !== -1) {
+      // If the item already exists, update its version and description
+      this.selectedItems[existingItemIndex].description = description;
+      this.selectedItems[existingItemIndex].version = version;
+    } else {
+      // If the item doesn't exist, add a new item to selectedItems
+      const newItem = {
+        name: mainItem,
+        description: description,
+        version: version
+      };
+      this.selectedItems.push(newItem);
+      ProjectCreatorComponent.itemLists.push(newItem);
+      for (const item of this.selectedItems) {
+        console.log('Name:', item.name);
+        console.log('Description:', item.description);
+        console.log('Version:', item.version);
+        console.log('---'); // Add a separator if needed
+      }
+    }
+
+
+
+    // Use the data as needed in this component
   }
+  customDependency(){
+
+  }
+
+
+  showPopup(): void {
+    const popup = this.dialog.open(DependencyComponent);
+    console.log("show popup method called")
+    this.isPopupVisible = true;
+    popup.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      this.selectedItem();
+
+
+    });
+
+  }
+
   hidePopup() {
     this.isPopupVisible = false;
   }
@@ -46,6 +106,20 @@ export class ProjectCreatorComponent {
   //   this.popupDependencyService.addDependency(dependency);
   //   this.showPopup = false; // Close the popup
   // }
+
+  removeItem(itemToRemove: any): void {
+    // Find the index of the item to remove in the selectedItems array
+    const indexToRemove = this.selectedItems.indexOf(itemToRemove);
+
+    // Check if the item was found in the array
+    if (indexToRemove !== -1) {
+      // Remove the item from the selectedItems array
+      this.selectedItems.splice(indexToRemove, 1);
+      ProjectCreatorComponent.itemLists.splice(indexToRemove, 1);
+    }
+  }
+
+
   onJavaVersionChange() {
 
     const javaVersionString = (document.getElementById('javaVersion') as HTMLInputElement);
@@ -160,7 +234,9 @@ export class ProjectCreatorComponent {
     const projectData = {
       projectName: projectName,
       javaVersion: javaVersion,
-      packageName: packageName
+      packageName: packageName,
+      dependencies: ProjectCreatorComponent.itemLists,
+      dependencies1: this.selectedItems
     };
 
     generateButton.disabled = true;
@@ -169,20 +245,14 @@ export class ProjectCreatorComponent {
 
       response => {
         console.log('API response:', response);
-
         this.makeUnVisible(generatingMessage);
         this.makeVisible(downloadingMessage);
-
         this.backendService.downloadZip(projectName);
         this.makeUnVisible(downloadingMessage);
         generateButton.disabled = false;
         this.makeVisible(doneMessage);
-
-
         this.onDeleteProject(projectName);
 
-
-        // Handle success, e.g., show a success message
       },
       error => {
         console.error('API error:', error);

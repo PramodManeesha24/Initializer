@@ -1,13 +1,13 @@
 @import 'https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300';
 
 
-.mainContainer{
+.mainContainer {
   margin: 0 10%;
   height: 100%;
   padding-left: 3.25em;
   padding-right: 3.25em;
   /*justify-content: center;*/
-  display:flex ;
+  display: flex;
   flex-direction: column;
   border-left: 1px solid #ccc;
   border-right: 1px solid #ccc;
@@ -16,7 +16,8 @@
 }
 
 
-.body-div{
+.body-div {
+  height: calc(100% - 200px);
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -28,7 +29,7 @@
       CSS for Inputs div
 ==============================================*/
 
-.inputs-div{
+.inputs-div {
   margin-top: 50px;
   margin-bottom: 35px;
   width: 100%;
@@ -38,14 +39,16 @@
   position: center;
 }
 
-.headerDiv{
+.headerDiv {
   margin-bottom: 25px;
   display: flex;
 }
 
-label{
+label {
   font-weight: bold;
 }
+
+
 
 /*=======================================
      CSS for placeholder color change
@@ -58,7 +61,7 @@ label{
   color: red;
 }
 
-.error-placeholder::-ms-input-placeholder{
+.error-placeholder::-ms-input-placeholder {
   color: red;
 }
 
@@ -66,7 +69,7 @@ label{
 /*==========================================
     CSS for dependency div
  ===========================================*/
-.dependencies-div{
+.dependencies-div {
   margin-top: 50px;
   margin-bottom: 35px;
   width: 100%;
@@ -74,26 +77,34 @@ label{
   padding: 20px;
   position: center;
 }
+.dependency-list{
+  height: 30%;
+  width: 100%;
 
-.dependency-headerDiv{
+}
+
+.dependency-headerDiv {
   border-bottom: 1px solid #ccc;
   display: flex;
   flex-direction: row;
   margin-right: 0;
   margin-left: 0;
 }
-.default-message{
+
+.default-message {
   padding: 10px 10px 10px 10px;
   font-style: italic;
 }
-.box-1{
+
+.box-1 {
   margin-right: 0;
   display: flex;
   justify-content: right;
   align-items: center;
 }
+
 .dependency-btn {
-  margin: 5px 5px 5px 5px;
+  margin: 0 5px 5px 5px;
   line-height: 35px;
   height: 35px;
   text-align: center;
@@ -135,15 +146,18 @@ label{
   /*background-color: rgba(0, 86, 171, 0.24);*/
   transform: scale(0.1, 1);
 }
+
 .add-btn:hover span {
   letter-spacing: 2px;
   font-weight: bold;
   color: #0000ab;
 }
+
 .add-btn:hover::before {
   opacity: 1;
   transform: scale(1, 1);
 }
+
 .add-btn::after {
   content: '';
   position: absolute;
@@ -155,22 +169,142 @@ label{
   transition: all 0.3s;
   background-color: rgba(255, 255, 255, 0);
 }
+
 .add-btn:hover::after {
   opacity: 0;
   transform: scale(0.1, 1);
 }
 
 
-.modal-dialog{
+.modal-dialog {
   width: 800px;
   height: 500px;
 }
+
+.selected-dependency-list {
+  /*border-bottom: 1px solid #ccc;*/
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.list-items:hover .remove-btn {
+  background-color: red;
+  border-color: red;
+}
+
+.selected-dependency-list-body {
+
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  margin-right: 0;
+  margin-left: 0;
+
+}
+
+/*.remove-btn-div{*/
+
+/*  margin-right: 0;*/
+/*  padding: 10px 10px 10px 10px;*/
+/*  justify-content: center;*/
+
+/*}*/
+/*.remove-btn{*/
+
+/*  font-size: 40px;*/
+/*  color: white;*/
+/*  background-color: white;*/
+/*  border-color: white;*/
+/*  mso-border-shadow: no;*/
+/*}*/
+.list-items {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  list-style-type: none;
+  margin-right: 0;
+  margin-left: 0;
+  justify-content: space-between;
+  border-bottom: 1px solid #ccc;
+  padding: 10px 10px 10px 10px;
+}
+
+.remove-btn-div {
+  width: 60px;
+  /*background-color: #0000ab;*/
+  margin-right: 0;
+  padding: 10px;
+  display: inherit;
+  justify-content: center;
+}
+
+.remove-btn {
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  margin-right: 0;
+  font-size: 40px;
+  display: inherit;
+  justify-content: center;
+  padding-top: -1px;
+  color: white;
+  background-color: white;
+  border: none; /* Remove the border */
+  box-shadow: none; /* Remove the box shadow */
+  /*mso-border-shadow: none;*/
+}
+
+.selected-dependency-list-body ul {
+  width: 100%;
+  list-style-type: none;
+  padding: 0 0 0 20px;
+}
+
+.selected-dependency-list ul li {
+  list-style: none;
+  margin-left: -20px;
+  padding: 10px 10px;
+
+}
+
+.selected-dependency-list ul li span {
+  display: block;
+}
+
+.selected-dependency-list ul li strong {
+  margin-right: 20px;
+}
+
+/*============================================
+      CSS for custom dependency div
+==============================================*/
+.custom-dependency-div{
+  margin-bottom: 0;
+  height: 70%;
+  width: 100%;
+
+}
+.custom-dependency-text{
+  list-style: none;
+  border: 1px solid #ccc;
+  height: 50%;
+  width: 100%;
+  /*resize: none;*/
+
+}
+.custom-dependency-text:focus{
+  outline: none;
+  border: 1px solid #0000ab;
+}
+
 
 /*============================================
       CSS for title div
 ==============================================*/
 
-.title-div{
+.title-div {
   margin-top: 25px;
   display: flex;
   border-bottom: 1px solid #ccc;
@@ -178,19 +312,22 @@ label{
 
 .logo {
   max-width: 50px;
+  max-height: 60px;
   margin-right: 10px;
 }
-.title-h1{
+
+.title-h1 {
+  margin-top: 10px;
   display: inline;
+  font-size: 40px;
   margin-right: 5px;;
 }
-
 
 
 /*============================================
       CSS for Footer div
 ==============================================*/
-.footer-div{
+.footer-div {
   background-color: rgb(255, 255, 255);
   justify-content: center;
   display: grid;
@@ -200,28 +337,34 @@ label{
   position: fixed;
   padding: 20px;
 }
-.btn-primary{
+
+.btn-primary {
   justify-content: center;
 }
 
-.processing_message{
+.processing_message {
   width: 100%;
   justify-content: center;
-  display:flex ;
+  display: flex;
 }
 
-.mt-3{
+.mt-3 {
   animation: fadeIn 2s ease-in-out infinite alternate;
   /*animation-timing-function: ease;*/
   /*margin-left: 39%;*/
 }
-.doneMessage{
+
+.doneMessage {
   padding-top: 6px;
 }
 
 @keyframes fadeIn {
-  0% {opacity: 0;}
-  100% {opacity: 1;}
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 
 }
 
