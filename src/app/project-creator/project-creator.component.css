@@ -47,8 +47,11 @@
 label {
   font-weight: bold;
 }
-
-
+#javaVersion:focus,
+#projectName:focus{
+  outline: none;
+  border: 1px solid #0000ab;
+}
 
 /*=======================================
      CSS for placeholder color change

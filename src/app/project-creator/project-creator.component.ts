@@ -1,4 +1,5 @@
-import {Component, Inject} from '@angular/core';
+import {Component} from '@angular/core';
+import {AbstractControl, FormControl, ValidatorFn} from '@angular/forms';
 import { PopupDependencyService } from '../popup-dependency.service';
 import { BackendService } from '../backend.service';
 import {DataService} from "../data.service";
@@ -137,6 +138,8 @@ export class ProjectCreatorComponent {
     const generatingMessage = (document.getElementById('generatingMessage') as HTMLInputElement);
     const downloadingMessage = (document.getElementById('downloadingMessage') as HTMLInputElement);
     const doneMessage = (document.getElementById('doneMessage') as HTMLInputElement);
+    const customDependency = (document.getElementById('custom-dependency-text') as HTMLInputElement);
+
 
 
     //
@@ -178,7 +181,9 @@ export class ProjectCreatorComponent {
       projectName.style.borderColor = '';
       projectName.placeholder = '';
     }
+    if (customDependency.value !== '') {
 
+    }
 
     if (javaVersionString.value === '') {
       javaVersionString.style.color = 'red';
@@ -199,6 +204,20 @@ export class ProjectCreatorComponent {
       packageName.style.borderColor = 'red';
       packageName.classList.add('error-placeholder');
       allFilled = false;
+    }
+    if (customDependency.value !== '') {
+      const customDependencyControl = new FormControl('', mavenDependencyValidator());
+      customDependencyControl.setValue(customDependency.value);
+
+      if (customDependencyControl.hasError('invalidMavenDependency')) {
+        console.log('Invalid Maven Dependency');
+        customDependency.value = '';
+        customDependency.placeholder = ' * Invalid Maven Dependency';
+        customDependency.style.borderColor = 'red';
+        allFilled = false;
+      } else {
+        console.log('Valid Maven Dependency');
+      }
     }
 
     if (allFilled) {
@@ -290,8 +309,15 @@ export class ProjectCreatorComponent {
 
   creatingMessage() {
 
+
   }
 
 
 
+}
+export function mavenDependencyValidator(): ValidatorFn {
+  return (control: AbstractControl): {[key: string]: any} | null => {
+    const valid = /^<dependency>\s*<groupId>[^<]+<\/groupId>\s*<artifactId>[^<]+<\/artifactId>\s*<version>[^<]+<\/version>\s*<\/dependency>$/.test(control.value);
+    return valid ? null : {'invalidMavenDependency': {value: control.value}};
+  };
 }
