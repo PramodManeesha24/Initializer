@@ -81,8 +81,9 @@ label {
   position: center;
 }
 .dependency-list{
-  height: 30%;
+  height: 45%;
   width: 100%;
+  overflow-y: auto;
 
 }
 
@@ -186,7 +187,7 @@ label {
 
 .selected-dependency-list {
   /*border-bottom: 1px solid #ccc;*/
-  height: 100%;
+  height: 30%;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -283,9 +284,11 @@ label {
 /*============================================
       CSS for custom dependency div
 ==============================================*/
-.custom-dependency-div{
+.custom-dependency-div,
+.custom-dependency-div::after,
+.custom-dependency-div::before {
   margin-bottom: 0;
-  height: 70%;
+  height: 60%;
   width: 100%;
 
 }
@@ -339,6 +342,20 @@ label {
   bottom: 0;
   position: fixed;
   padding: 20px;
+}
+.btn-div{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#resetButton{
+  margin-left: 10px;
+}
+#resetButton:hover{
+
+  color: #0000ab;
+  border-color: #0000ab;
+
 }
 
 .btn-primary {

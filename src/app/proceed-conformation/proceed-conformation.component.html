@@ -1,0 +1,17 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<div class="conformation_div" #confirmationPopup>
+  <div class="content">
+    <ul>
+      <li style="font-size: 16px; padding-top: 10px" *ngFor="let message of messages">{{ message }}</li>
+
+    </ul>
+    <p style="font-size: 16px; padding-top: 10px">Do you want to proceed?</p>
+  </div>
+  <div class="footer">
+    <div class="btns">
+      <a href="#" class="btn btn-primary">Proceed</a>
+      <a href="#" class="btn btn-primary" (click)="handleNoButtonClick()">No</a>
+    </div>
+  </div>
+</div>

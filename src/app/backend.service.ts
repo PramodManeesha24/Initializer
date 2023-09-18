@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { saveAs } from 'file-saver';
-import { Observable, throwError } from 'rxjs';
+import {Observable, tap, throwError} from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 
@@ -17,6 +17,23 @@ export class BackendService {
 
     const url = `${this.baseUrl}/create-project`;
     return this.http.post(url, data);
+  }
+  getVersions(): Observable<any> {
+    const url = `${this.baseUrl}/get-versions`;
+    return this.http.get(url).pipe(
+      tap(response => {
+        console.log('API response for get version :', response);
+      })
+    );
+  }
+
+  getLatestVersion(): Observable<any> {
+    const url = `${this.baseUrl}/get-latest-version`;
+    return this.http.get(url).pipe(
+      tap(response => {
+        console.log('API response for get-latest-version :', response);
+      })
+    );
   }
 
 

@@ -13,12 +13,14 @@ import {NgIf} from '@angular/common';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ProceedConformationComponent } from './proceed-conformation/proceed-conformation.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ProjectCreatorComponent,
-    DependencyComponent
+    DependencyComponent,
+    ProceedConformationComponent
   ],
   imports: [
     HttpClientModule,

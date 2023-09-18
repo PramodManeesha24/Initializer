@@ -12,37 +12,63 @@ import { DataService } from '../data.service';
   styleUrls: ['./dependency.component.css']
 })
 export class DependencyComponent {
-
-
-  constructor(private popupDependencyService: PopupDependencyService,
-              private dataService: DataService,
-              public popup: MatDialogRef<DependencyComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: ProjectCreatorComponent) {  }
-  // above is the constructor for the dependency component can access the popup dependency service
-
-
   selectedMainItem: string | null = null;
   itemDescription: string | null = null;
   selectedVersion: string | null = null;
+
+
+
 
   itemList: any[] = [
     {
       name: 'AutoFlex',
       description: 'AutoFlex is a keyword-driven test automation framework designed to facilitate seamless web application testing.',
-      versions: ['Version 1.0', 'Version 2.0']
+      versions: [],
     },
     {
       name: 'Healanium Manager',
       description: 'The Healanium Manager library enables automated integration of Healanium into AutoFlex.',
-      versions: ['Version 1.0', 'Version 2.0']
+      versions: [],
     },
-    {
-      name: 'Healanium Web',
-      description: 'The Healanium web library offers automated self-healing capabilities for testing.',
-      versions: ['Version 1.0', 'Version 2.0']
-    }
+    // {
+    //   name: 'Healanium Web',
+    //   description: 'The Healanium web library offers automated self-healing capabilities for testing.',
+    //   versions: ['Version 1.0', 'Version 2.0']
+    // }
     // Add more items here
   ];
+
+
+  constructor(private popupDependencyService: PopupDependencyService,
+              private dataService: DataService,
+              public popup: MatDialogRef<DependencyComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: any) {
+    if (data) {
+      console.log('Data received from the backend:', data);
+
+      // Assuming the data received from the backend is a Map<String, List<number>>
+      const mapData: Map<string, number[]> = new Map(Object.entries(data));
+
+      // Accessing a specific value by key (e.g., "AutoFlex")
+      const autoFlexVersions: number[] | undefined = mapData.get("AutoFlex");
+
+      // Accessing a specific value by key (e.g., "Healinium manager")
+      const healaniumManagerVersions: number[] | undefined = mapData.get("Healanium Manager");
+      console.log (healaniumManagerVersions);
+      if (autoFlexVersions) {
+        this.itemList[0].versions = autoFlexVersions.map(version => `${version}`);
+      }
+      if (healaniumManagerVersions) {
+        this.itemList[1].versions = healaniumManagerVersions.map(version => `${version}`);
+      }
+
+
+    } else {
+      console.error('Data received from the backend is undefined.');
+    }
+  }
+
+
 
 
   versionVisibility: { [key: string]: boolean } = {
@@ -51,6 +77,7 @@ export class DependencyComponent {
     'Healanium Web': false,
     // Add more items as needed
   };
+
   dependencies = [
     { name: 'AutoFlex', versions: ['v1.0', 'v2.0'] },
     { name: 'Healanium Manager', versions: ['v1.0', 'v2.0'] },

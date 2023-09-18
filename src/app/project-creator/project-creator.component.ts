@@ -1,16 +1,11 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AbstractControl, FormControl, ValidatorFn} from '@angular/forms';
-import { PopupDependencyService } from '../popup-dependency.service';
-import { BackendService } from '../backend.service';
+import {BackendService} from '../backend.service';
 import {DataService} from "../data.service";
-import {MatDialog, MAT_DIALOG_DATA, MatDialogRef, MatDialogModule} from '@angular/material/dialog';
-import {NgIf} from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import {FormsModule} from '@angular/forms';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {AppModule} from "../app.module";
+import {MatDialog} from '@angular/material/dialog';
 import {DependencyComponent} from "../dependency/dependency.component";
+import { trigger, state, style, transition, animate } from '@angular/animations';
+import {ProceedConformationComponent} from "../proceed-conformation/proceed-conformation.component";
 
 export interface DialogData {
   animal: string;
@@ -20,6 +15,15 @@ export interface DialogData {
   selector: 'app-project-creator',
   templateUrl: './project-creator.component.html',
   styleUrls: ['./project-creator.component.css'],
+  animations: [
+    trigger('rotateAnimation', [
+      state('initial', style({ transform: 'rotate(0)' })),
+      state('rotated', style({ transform: 'rotate(360deg)' })),
+      transition('initial => rotated', animate('500ms ease-in')),
+      transition('rotated => initial', animate('0ms'))
+
+    ]),
+  ],
 })
 export class ProjectCreatorComponent {
 
@@ -27,16 +31,35 @@ export class ProjectCreatorComponent {
   constructor(private backendService: BackendService,
               public dialog: MatDialog,
 
-
               private dataService: DataService,
   ) { }
   javaVersions: number[] = [17, 18, 19, 20];
-
+  rotationState = 'initial';
   isPopupVisible: boolean = false;
   isDependencyAdded: boolean = false;
 
   public static itemLists: any[] = [];
   selectedItems: any[] = [];
+  proceedMessagesList: string[] = [];
+  autoFlexVersions: string[] | undefined = [];
+  healaniumManagerVersions: string[] | undefined = [];
+
+  ngOnInit(): void {
+    const versions: any = this.backendService.getVersions().subscribe(
+
+      response => {
+
+        console.log('API response for versions :', response);
+        this.autoFlexVersions = response["AutoFlex"];
+        this.healaniumManagerVersions = response["Helanium Manager"];
+
+      },
+      error => {
+        console.error('API error:', error);
+      }
+    );
+  }
+
   selectedItem() {
     // Access the data from the service
     const mainItem = this.dataService.selectedMainItem;
@@ -51,6 +74,8 @@ export class ProjectCreatorComponent {
 
     if (existingItemIndex !== -1) {
       // If the item already exists, update its version and description
+      ProjectCreatorComponent.itemLists[existingItemIndex].description = description;
+      ProjectCreatorComponent.itemLists[existingItemIndex].version = version;
       this.selectedItems[existingItemIndex].description = description;
       this.selectedItems[existingItemIndex].version = version;
     } else {
@@ -69,26 +94,67 @@ export class ProjectCreatorComponent {
         console.log('---'); // Add a separator if needed
       }
     }
-
-
-
-    // Use the data as needed in this component
   }
-  customDependency(){
+
+  rotate() {
+    const projectName = (document.getElementById('projectName') as HTMLInputElement);
+    const javaVersionString = (document.getElementById('javaVersion') as HTMLInputElement);
+
+    const javaVersion = parseInt(javaVersionString.value);
+
+
+
+    const customDependency = (document.getElementById('custom-dependency-text') as HTMLInputElement);
+
+
+    this.rotationState = this.rotationState === 'initial' ? 'rotated' : 'initial';
+    this.rotationState = 'initial';
+    projectName.value = '';
+    javaVersionString.value = '';
+    customDependency.value = '';
+    ProjectCreatorComponent.itemLists = [];
+    this.selectedItems = [];
+    this.isDependencyAdded = false;
+
+    const emptyMessages: string[] = [];
+    this.dataService.updateMessages(emptyMessages);
+
+
+    // Toggle the rotation state to 'rotated'
+    setTimeout(() => {
+      this.rotationState = 'rotated';
+    }, 10);
 
   }
 
 
   showPopup(): void {
-    const popup = this.dialog.open(DependencyComponent);
-    console.log("show popup method called")
-    this.isPopupVisible = true;
-    popup.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      this.selectedItem();
+
+    const versions: any = this.backendService.getVersions().subscribe(
+
+      response => {
+
+        console.log('API response for versions :', response);
+        const autoFlexVersions: string[] | undefined = response["AutoFlex"];
+        const healaniumManagerVersions: string[] | undefined = response["Helanium Manager"];
 
 
-    });
+        const dialogRef = this.dialog.open(DependencyComponent, {
+          data: response  // Pass the data as 'data' property
+        });
+
+        this.isPopupVisible = true;
+
+        dialogRef.afterClosed().subscribe(result => {
+          console.log('The dialog was closed');
+          this.selectedItem();
+        });
+      },
+      error => {
+        console.error('API error:', error);
+      }
+    );
+
 
   }
 
@@ -97,16 +163,7 @@ export class ProjectCreatorComponent {
   }
 
 
-  // openPopup(content: any) {
-  //   this.showPopup = true;
-  //   this.modalService.open(content, { centered: true }); // Use NgbModal to open the popup
-  // }
-  //
-  //
-  // addDependency(dependency: any) {
-  //   this.popupDependencyService.addDependency(dependency);
-  //   this.showPopup = false; // Close the popup
-  // }
+
 
   removeItem(itemToRemove: any): void {
     // Find the index of the item to remove in the selectedItems array
@@ -117,6 +174,9 @@ export class ProjectCreatorComponent {
       // Remove the item from the selectedItems array
       this.selectedItems.splice(indexToRemove, 1);
       ProjectCreatorComponent.itemLists.splice(indexToRemove, 1);
+      if (ProjectCreatorComponent.itemLists.length === 0) {
+        this.isDependencyAdded = false;
+      }
     }
   }
 
@@ -139,23 +199,6 @@ export class ProjectCreatorComponent {
     const downloadingMessage = (document.getElementById('downloadingMessage') as HTMLInputElement);
     const doneMessage = (document.getElementById('doneMessage') as HTMLInputElement);
     const customDependency = (document.getElementById('custom-dependency-text') as HTMLInputElement);
-
-
-
-    //
-    // const group = document.getElementById('group');
-    // const artifact = document.getElementById('artifact');
-    //
-    //
-    // group.addEventListener('input', updatePackageName);
-    // artifact.addEventListener('input', updatePackageName);
-    //
-    // function updatePackageName() {
-    //   const groupValue = group.nodeValue
-    // }
-
-
-
 
     generatingMessage.style.display = 'none';
     downloadingMessage.style.display = 'none';
@@ -214,17 +257,48 @@ export class ProjectCreatorComponent {
         customDependency.value = '';
         customDependency.placeholder = ' * Invalid Maven Dependency';
         customDependency.style.borderColor = 'red';
+        customDependency.classList.add('error-placeholder');
         allFilled = false;
       } else {
         console.log('Valid Maven Dependency');
       }
     }
 
+
     if (allFilled) {
-      this.generateProject();
+      const versions: any = this.backendService.getLatestVersion().subscribe(
+      response => {
+
+        console.log("versions " , response)
+        const mapData: Map<string, number> = new Map(Object.entries(response));
+        // Accessing a specific value by key (e.g., "AutoFlex")
+        const autoFlexVersions: number | undefined = mapData.get("AutoFlex");
+        const healaniumManagerVersions: number | undefined = mapData.get("Healanium Manager");
+        if (!this.selectedItems.some(item => item.name === 'AutoFlex')) {
+          const text1 = 'AutoFlex version is not selected. Proceed with Latest version ' + autoFlexVersions;
+          this.proceedMessagesList.push(text1);
+        }
+        if (!this.selectedItems.some(item => item.name === 'Healanium Manager')) {
+          const text2 = 'Healanium Manager version is not selected. Proceed with Latest version ' + healaniumManagerVersions;
+          this.proceedMessagesList.push(text2);
+        }
+
+        if (this.proceedMessagesList.length > 0) {
+          this.proceedMessage()
+        }
+      },
+      error => {
+        console.error('API error:', error);
+      });
+
+        // this.generateProject();
     }
 
-
+  }
+  proceedMessage(){
+    console.log("proceed message " , this.proceedMessagesList)
+    this.dataService.updateMessages(this.proceedMessagesList);
+    const dialogRef = this.dialog.open(ProceedConformationComponent, {});
 
   }
 
@@ -249,13 +323,16 @@ export class ProjectCreatorComponent {
     const projectName = (document.getElementById('projectName') as HTMLInputElement).value;
     const javaVersion = (document.getElementById('javaVersion') as HTMLInputElement).value;
     const packageName = (document.getElementById('packageName') as HTMLInputElement).value;
+    const customDependency = (document.getElementById('custom-dependency-text') as HTMLInputElement);
+
 
     const projectData = {
       projectName: projectName,
       javaVersion: javaVersion,
       packageName: packageName,
       dependencies: ProjectCreatorComponent.itemLists,
-      dependencies1: this.selectedItems
+      dependencies1: this.selectedItems,
+      customDependency: customDependency.value
     };
 
     generateButton.disabled = true;
@@ -263,7 +340,7 @@ export class ProjectCreatorComponent {
     this.backendService.createProject(projectData).subscribe(
 
       response => {
-        console.log('API response:', response);
+        console.log('API response for create project:', response);
         this.makeUnVisible(generatingMessage);
         this.makeVisible(downloadingMessage);
         this.backendService.downloadZip(projectName);
@@ -317,7 +394,8 @@ export class ProjectCreatorComponent {
 }
 export function mavenDependencyValidator(): ValidatorFn {
   return (control: AbstractControl): {[key: string]: any} | null => {
-    const valid = /^<dependency>\s*<groupId>[^<]+<\/groupId>\s*<artifactId>[^<]+<\/artifactId>\s*<version>[^<]+<\/version>\s*<\/dependency>$/.test(control.value);
+    const valid = /^<dependency>((.|\n)*?)<\/dependency>/.test(control.value) ||
+    /^<.*?>\n<dependency>((.|\n)*?)<\/dependency>/.test(control.value);
     return valid ? null : {'invalidMavenDependency': {value: control.value}};
   };
 }
