@@ -350,16 +350,14 @@ label {
 }
 #resetButton{
   margin-left: 10px;
+  display: flex;
+  flex-direction: row;
 }
-#resetButton:hover{
 
-  color: #0000ab;
-  border-color: #0000ab;
-
-}
 
 .btn-primary {
   justify-content: center;
+  height: 40px;
 }
 
 .processing_message {

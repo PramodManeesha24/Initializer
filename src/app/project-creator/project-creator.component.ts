@@ -43,21 +43,41 @@ export class ProjectCreatorComponent {
   proceedMessagesList: string[] = [];
   autoFlexVersions: string[] | undefined = [];
   healaniumManagerVersions: string[] | undefined = [];
+  versionList: any[] = [];
+  projectData = {};
+
+  latestVersions: Map<string, number> = new Map<string, number>();
+
+
 
   ngOnInit(): void {
+
     const versions: any = this.backendService.getVersions().subscribe(
 
       response => {
-
+        this.autoFlexVersions = [];
         console.log('API response for versions :', response);
-        this.autoFlexVersions = response["AutoFlex"];
-        this.healaniumManagerVersions = response["Helanium Manager"];
+        this.versionList = response;
+
+        console.log("versionList list :" , this.versionList);
 
       },
       error => {
         console.error('API error:', error);
       }
     );
+
+    const lastVersions: any = this.backendService.getLatestVersion().subscribe(
+      response => {
+        this.latestVersions = new Map(Object.entries(response));
+        console.log("lastVersions list :" , this.latestVersions);
+      },
+      error => {
+        console.error('API error:', error);
+      });
+
+
+
   }
 
   selectedItem() {
@@ -100,10 +120,6 @@ export class ProjectCreatorComponent {
     const projectName = (document.getElementById('projectName') as HTMLInputElement);
     const javaVersionString = (document.getElementById('javaVersion') as HTMLInputElement);
 
-    const javaVersion = parseInt(javaVersionString.value);
-
-
-
     const customDependency = (document.getElementById('custom-dependency-text') as HTMLInputElement);
 
 
@@ -114,10 +130,11 @@ export class ProjectCreatorComponent {
     customDependency.value = '';
     ProjectCreatorComponent.itemLists = [];
     this.selectedItems = [];
+    this.projectData = {};
     this.isDependencyAdded = false;
 
     const emptyMessages: string[] = [];
-    this.dataService.updateMessages(emptyMessages);
+    this.dataService.updateMessages(emptyMessages, this.projectData);
 
 
     // Toggle the rotation state to 'rotated'
@@ -129,19 +146,25 @@ export class ProjectCreatorComponent {
 
 
   showPopup(): void {
-
-    const versions: any = this.backendService.getVersions().subscribe(
-
-      response => {
-
-        console.log('API response for versions :', response);
-        const autoFlexVersions: string[] | undefined = response["AutoFlex"];
-        const healaniumManagerVersions: string[] | undefined = response["Helanium Manager"];
+    const dialogRef = this.dialog.open(DependencyComponent, {
+            data: this.versionList  // Pass the data as 'data' property
+          });
 
 
-        const dialogRef = this.dialog.open(DependencyComponent, {
-          data: response  // Pass the data as 'data' property
-        });
+    // const versions: any = this.backendService.getVersions().subscribe(
+    //
+    //   response => {
+    //
+    //     console.log('API response for versions in show popup :', response);
+    //     // const autoFlexVersions: string[] | undefined = response["AutoFlex"];
+    //     // const healaniumManagerVersions: string[] | undefined = response["Helanium Manager"];
+
+
+        // const dialogRef = this.dialog.open(DependencyComponent, {
+        //   data: response  // Pass the data as 'data' property
+        // });
+    // const autoFlexVersions: string[] | undefined = this.autoFlexVersions;
+    // const healaniumManagerVersions: string[] | undefined = this.healaniumManagerVersions;
 
         this.isPopupVisible = true;
 
@@ -149,11 +172,11 @@ export class ProjectCreatorComponent {
           console.log('The dialog was closed');
           this.selectedItem();
         });
-      },
-      error => {
-        console.error('API error:', error);
-      }
-    );
+      // },
+    //   error => {
+    //     console.error('API error:', error);
+    //   }
+    // );
 
 
   }
@@ -190,7 +213,7 @@ export class ProjectCreatorComponent {
   checkValues(){
 
 
-    const alphabeticRegex = /^[a-zA-Z0-9-_()\[\]{}]+$/
+    const alphabeticRegex = /^[a-zA-Z0-9-_()\[\]{} ]+$/
     const projectName = (document.getElementById('projectName') as HTMLInputElement);
     const javaVersionString = (document.getElementById('javaVersion') as HTMLInputElement);
     const packageName = (document.getElementById('packageName') as HTMLInputElement);
@@ -199,6 +222,8 @@ export class ProjectCreatorComponent {
     const downloadingMessage = (document.getElementById('downloadingMessage') as HTMLInputElement);
     const doneMessage = (document.getElementById('doneMessage') as HTMLInputElement);
     const customDependency = (document.getElementById('custom-dependency-text') as HTMLInputElement);
+    const generateButton = (document.getElementById('generateButton') as HTMLInputElement);
+
 
     generatingMessage.style.display = 'none';
     downloadingMessage.style.display = 'none';
@@ -266,38 +291,76 @@ export class ProjectCreatorComponent {
 
 
     if (allFilled) {
-      const versions: any = this.backendService.getLatestVersion().subscribe(
-      response => {
-
-        console.log("versions " , response)
-        const mapData: Map<string, number> = new Map(Object.entries(response));
-        // Accessing a specific value by key (e.g., "AutoFlex")
-        const autoFlexVersions: number | undefined = mapData.get("AutoFlex");
-        const healaniumManagerVersions: number | undefined = mapData.get("Healanium Manager");
-        if (!this.selectedItems.some(item => item.name === 'AutoFlex')) {
-          const text1 = 'AutoFlex version is not selected. Proceed with Latest version ' + autoFlexVersions;
-          this.proceedMessagesList.push(text1);
-        }
-        if (!this.selectedItems.some(item => item.name === 'Healanium Manager')) {
-          const text2 = 'Healanium Manager version is not selected. Proceed with Latest version ' + healaniumManagerVersions;
-          this.proceedMessagesList.push(text2);
-        }
-
-        if (this.proceedMessagesList.length > 0) {
-          this.proceedMessage()
-        }
-      },
-      error => {
-        console.error('API error:', error);
-      });
+      // const versions: any = this.backendService.getLatestVersion().subscribe(
+      // response => {
+      //
+      //   console.log("versions " , response)
+      //   const mapData: Map<string, number> = new Map(Object.entries(response));
+      //   // Accessing a specific value by key (e.g., "AutoFlex")
+      //   const autoFlexVersions: number | undefined = mapData.get("AutoFlex");
+      //   const healaniumManagerVersions: number | undefined = mapData.get("Healanium Manager");
+      //   if (!this.selectedItems.some(item => item.name === 'AutoFlex')) {
+      //     const text1 = 'AutoFlex version is not selected. Proceed with Latest version ' + autoFlexVersions;
+      //     this.proceedMessagesList.push(text1);
+      //   }
+      //   if (!this.selectedItems.some(item => item.name === 'Healanium Manager')) {
+      //     const text2 = 'Healanium Manager version is not selected. Proceed with Latest version ' + healaniumManagerVersions;
+      //     this.proceedMessagesList.push(text2);
+      //   }
+      //
+      //   if (this.proceedMessagesList.length > 0) {
+      //     this.proceedMessage()
+      //   }
+      // },
+      // error => {
+      //   console.error('API error:', error);
+      // });
 
         // this.generateProject();
+
+
+
+
+      this.projectData = {
+        projectName: projectName.value,
+        javaVersion: javaVersion,
+        packageName: packageName.value,
+        dependencies: ProjectCreatorComponent.itemLists,
+        dependencies1: this.selectedItems,
+        customDependency: customDependency.value,
+
+
+
+      };
+
+
+      this.proceedMessagesList = [];
+      const autoFlexVersions: number | undefined = this.latestVersions.get("AutoFlex");
+      const healaniumManagerVersions: number | undefined = this.latestVersions.get("Healanium Manager");
+      if (!this.selectedItems.some(item => item.name === 'AutoFlex')) {
+        const text1 = 'AutoFlex version is not selected. Proceed with Latest version ' + autoFlexVersions;
+        this.proceedMessagesList.push(text1);
+      }
+      if (!this.selectedItems.some(item => item.name === 'Healanium Manager')) {
+        const text2 = 'Healanium Manager version is not selected. Proceed with Latest version ' + healaniumManagerVersions;
+        this.proceedMessagesList.push(text2);
+      }
+
+      if (this.proceedMessagesList.length > 0) {
+        this.proceedMessage()
+      }
+      if (this.proceedMessagesList.length === 0) {
+        this.dataService.generateProject();
+        // this.generateProject();
+
+      }
+
     }
 
   }
   proceedMessage(){
-    console.log("proceed message " , this.proceedMessagesList)
-    this.dataService.updateMessages(this.proceedMessagesList);
+    console.log("proceed message " , this.proceedMessagesList);
+    this.dataService.updateMessages(this.proceedMessagesList, this.projectData);
     const dialogRef = this.dialog.open(ProceedConformationComponent, {});
 
   }
@@ -326,7 +389,7 @@ export class ProjectCreatorComponent {
     const customDependency = (document.getElementById('custom-dependency-text') as HTMLInputElement);
 
 
-    const projectData = {
+    this.projectData = {
       projectName: projectName,
       javaVersion: javaVersion,
       packageName: packageName,
@@ -337,7 +400,7 @@ export class ProjectCreatorComponent {
 
     generateButton.disabled = true;
     this.makeVisible(generatingMessage);
-    this.backendService.createProject(projectData).subscribe(
+    this.backendService.createProject(this.projectData).subscribe(
 
       response => {
         console.log('API response for create project:', response);
